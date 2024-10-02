@@ -1,0 +1,64 @@
+### Registro de usuario
+POST http://localhost:8000/api/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "password": "password123",
+  "password_confirmation": "password123"
+}
+
+### Login de usuario (obtener token)
+POST http://localhost:8000/api/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "john.doe@example.com",
+  "password": "password123"
+}
+
+### Obtener todas las notes (autenticado)
+GET http://localhost:8000/api/notes?orderBy=created_at&orderIn=desc
+Authorization: Bearer 14|ErmjNS8V9q3BNcTtDElSY6LnQihhTEox8Fxt8a9fb3f66c6c
+Accept: application/json
+
+### Crear una nueva note (autenticado)
+POST http://localhost:8000/api/notes
+Authorization: Bearer 1|gw8U391o9Og6NkerQL4Hm4RuikJS6v9CI6iKAFce5dfc5aca
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "Nueva Note",
+  "description": "Descripción de la nueva note",
+  "tags": "importante, personal",
+  "imagenUrl": "https://example.com/imagen.jpg",
+  "expirationDate": "2024-12-31"
+}
+
+### Ver una note específica (autenticado)
+GET http://localhost:8000/api/notes/1
+Authorization: Bearer 1|gw8U391o9Og6NkerQL4Hm4RuikJS6v9CI6iKAFce5dfc5aca
+Accept: application/json
+
+### Actualizar una note existente (autenticado)
+PUT http://localhost:8000/api/notes/1
+Authorization: Bearer Bearer 1|gw8U391o9Og6NkerQL4Hm4RuikJS6v9CI6iKAFce5dfc5aca
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "Note Actualizada",
+  "description": "Descripción actualizada",
+  "tags": "actualizado, trabajo",
+  "imagenUrl": "https://example.com/nueva-imagen.jpg",
+  "expirationDate": "2025-01-15"
+}
+
+### Eliminar una note (autenticado)
+DELETE http://localhost:8000/api/notes/1
+Authorization: Bearer 1|gw8U391o9Og6NkerQL4Hm4RuikJS6v9CI6iKAFce5dfc5aca
+Accept: application/json
