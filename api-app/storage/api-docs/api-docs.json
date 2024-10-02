@@ -1,0 +1,436 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "CRUD: cuentas y pedidos",
+        "description": "Esta API en Laravel permite gestionar usuarios y notas a través de operaciones CRUD (Crear, Leer, Actualizar, Eliminar). Los usuarios pueden registrarse, iniciar sesión y obtener un token de autenticación (utilizando Laravel Sanctum). Los usuarios autenticados pueden crear, ver, actualizar y eliminar notas, las cuales incluyen campos como título, descripción, etiquetas, imagen y fecha de vencimiento.",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Iniciar sesión",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Inicio de sesión exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciales no válidas"
+                    }
+                }
+            }
+        },
+        "/api/notes": {
+            "get": {
+                "tags": [
+                    "Notas"
+                ],
+                "summary": "Obtener lista de notas del usuario autenticado",
+                "operationId": "9a95bde5931986ad60b9f7f414ec425e",
+                "parameters": [
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "Campo para ordenar las notas",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "created_at"
+                        }
+                    },
+                    {
+                        "name": "orderIn",
+                        "in": "query",
+                        "description": "Dirección de orden (asc o desc)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "asc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Note"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Notas"
+                ],
+                "summary": "Crear una nueva nota",
+                "operationId": "d133c170557b4935898f2e444e0fd418",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Mi nota"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Descripción de la nota"
+                                    },
+                                    "tags": {
+                                        "type": "string",
+                                        "example": "etiqueta1, etiqueta2"
+                                    },
+                                    "imagenUrl": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://ejemplo.com/imagen.jpg"
+                                    },
+                                    "expirationDate": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-10-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Nota creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Note"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/notes/{id}": {
+            "get": {
+                "tags": [
+                    "Notas"
+                ],
+                "summary": "Obtener una nota por su ID",
+                "operationId": "4f26c25d4040d0ef0fa8d8a5ea9fa4da",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la nota",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Nota encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Note"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nota no encontrada"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Notas"
+                ],
+                "summary": "Actualizar una nota existente",
+                "operationId": "c7e6224fadd6d82b81ded7615279a15c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la nota",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Mi nota actualizada"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Descripción actualizada de la nota"
+                                    },
+                                    "tags": {
+                                        "type": "string",
+                                        "example": "nuevaEtiqueta1, nuevaEtiqueta2"
+                                    },
+                                    "imagenUrl": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://ejemplo.com/nueva-imagen.jpg"
+                                    },
+                                    "expirationDate": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-12-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Nota actualizada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Note"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Notas"
+                ],
+                "summary": "Eliminar una nota existente",
+                "operationId": "99b63679b2822651f8f0ae585f927f0b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la nota",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Nota eliminada exitosamente"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID del usuario",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Nombre del usuario",
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "description": "Correo electrónico del usuario",
+                        "type": "string",
+                        "format": "email",
+                        "example": "john.doe@example.com"
+                    },
+                    "password": {
+                        "description": "Contraseña del usuario",
+                        "type": "string",
+                        "format": "password",
+                        "example": "password123"
+                    },
+                    "email_verified_at": {
+                        "description": "Fecha de verificación del correo electrónico",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-10-01T12:34:56Z"
+                    },
+                    "created_at": {
+                        "description": "Fecha de creación del usuario",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-10-01T12:34:56Z"
+                    },
+                    "updated_at": {
+                        "description": "Fecha de actualización del usuario",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-10-01T13:45:12Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Note": {
+                "required": [
+                    "title",
+                    "description",
+                    "user_id"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID de la nota",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "description": "Título de la nota",
+                        "type": "string",
+                        "example": "Mi nota"
+                    },
+                    "description": {
+                        "description": "Descripción de la nota",
+                        "type": "string",
+                        "example": "Esta es la descripción de mi nota"
+                    },
+                    "tags": {
+                        "description": "Etiquetas asociadas a la nota",
+                        "type": "string",
+                        "example": "importante, personal"
+                    },
+                    "imagenUrl": {
+                        "description": "URL de la imagen asociada a la nota",
+                        "type": "string",
+                        "format": "url",
+                        "example": "https://ejemplo.com/imagen.jpg"
+                    },
+                    "expirationDate": {
+                        "description": "Fecha de expiración de la nota",
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-12-31"
+                    },
+                    "user_id": {
+                        "description": "ID del usuario al que pertenece la nota",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "created_at": {
+                        "description": "Fecha de creación de la nota",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-10-01T12:34:56Z"
+                    },
+                    "updated_at": {
+                        "description": "Fecha de actualización de la nota",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-10-01T13:45:12Z"
+                    }
+                },
+                "type": "object"
+            },
+            "NoteWithUser": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Note"
+                    },
+                    {
+                        "properties": {
+                            "user": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Autenticación",
+            "description": "Autenticación"
+        },
+        {
+            "name": "Notas",
+            "description": "Notas"
+        }
+    ]
+}

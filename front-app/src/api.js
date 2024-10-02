@@ -1,7 +1,7 @@
 import axios from 'axios';
 import store from '@/store';
 
-const API_URL = 'http://localhost:8000/api';
+const API_URL = process.env.VUE_APP_API_URL;
 const authApi = axios.create({ baseURL: API_URL});
 authApi.interceptors.request.use(async (config) => {
   const token = store.state.token;
